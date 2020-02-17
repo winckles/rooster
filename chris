@@ -1,0 +1,41 @@
+
+class Stream extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+return StreamBuilder<QuerySnapshot>(
+        stream: firestore().collection('yourcollection').onSnapshot,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.lightBlueAccent,
+              ),
+            );
+          } else if (snapshot.connectionState == ConnectionState.done &&
+              !snapshot.hasData) {
+            return Center(
+              child: Text(
+                'Nothing found',
+              ),
+            );
+          } else if (snapshot.hasData) {
+            return ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+                itemCount: snapshot.data.docs.length,
+                itemBuilder: (BuildContext context, int index) {
+                    return _buildItem(
+                        context, snapshot.data.docs[index], index);
+                });
+          } else {
+            return Center(
+              child: Text('Something is wrong'),
+            );
+          }
+        });
+  }
+
+  Widget _buildItem(context, user, index) {
+    return Widget(); // return the widgets you want here for the documents in the snapshot
+  }
+}
